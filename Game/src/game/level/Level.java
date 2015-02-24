@@ -29,19 +29,21 @@ public class Level {
 	public static Level[] levels  = new Level[100];
 	
 	static {
-		levels[0] = new Level("/levels/level0.png", "/levels/overlay0.png", 0, new Vector2i(64*2, 64*5));
-		levels[1] = new Level("/levels/level1.png", "/levels/overlay1.png", 1, new Vector2i(64, 64*6));
-		levels[2] = new Level("/levels/level2.png", "/levels/overlay2.png", 2, new Vector2i(64, 64*6));
-		levels[3] = new Level("/levels/level3.png", 3, new Vector2i(64, 64*6));
-		levels[4] = new Level("/levels/level4.png", 4, new Vector2i(64, 64));
-		levels[5] = new Level("/levels/level5.png", 5, new Vector2i(62*2, 64*6));
-		levels[6] = new Level("/levels/level6.png", 6, new Vector2i(64*1, 64*4));
-		levels[7] = new Level("/levels/level7.png", 7, new Vector2i(64*1, 64*3));
-		levels[8] = new Level("/levels/level8.png", 8, new Vector2i(64*2, 64*7));
-		levels[9] = new Level("/levels/level9.png", 9, new Vector2i(64*2, 64*5));
-		levels[10] = new Level("/levels/level10.png", 10, new Vector2i(64*2, 64*6));
-		levels[11] = new Level("/levels/level11.png", 11, new Vector2i(64*1, 64*1));
-		levels[12] = new Level("/levels/level12.png", 12, new Vector2i(64*2, 64*4));
+		levels[0] = new Level("/levels/level0.png", "/levels/overlay0.png", 0, new Vector2i(64*2, 64*5+32));
+		levels[1] = new Level("/levels/level1.png", "/levels/overlay1.png", 1, new Vector2i(64, 64*6+32));
+		levels[2] = new Level("/levels/level2.png", "/levels/overlay2.png", 2, new Vector2i(64, 64*6+32));
+		levels[3] = new Level("/levels/level3.png", 3, new Vector2i(64, 64*6+32));
+		levels[4] = new Level("/levels/level4.png", 4, new Vector2i(64, 64+32));
+		levels[5] = new Level("/levels/level5.png", 5, new Vector2i(64*2, 64*6+32));
+		levels[6] = new Level("/levels/level6.png", 6, new Vector2i(62*2, 64*5+32));
+		levels[7] = new Level("/levels/level7.png", 7, new Vector2i(64*1, 64*4+32));
+		levels[8] = new Level("/levels/level8.png", 8, new Vector2i(64*1, 64*3+32));
+        levels[9] = new Level("/levels/level9.png", 9, new Vector2i(64*13 + 32, 64*5 + 32));
+		levels[10] = new Level("/levels/level10.png", 10, new Vector2i(64*2, 64*7+32));
+		levels[11] = new Level("/levels/level11.png", 11, new Vector2i(64*2, 64*5+32));
+		levels[12] = new Level("/levels/level12.png", 12, new Vector2i(64*2, 64*6+32));
+		levels[13] = new Level("/levels/level13.png", 13, new Vector2i(64*1, 64*1+32));
+		levels[14] = new Level("/levels/level14.png", 14, new Vector2i(64*2, 64*4+32));
 	}
 	
 	private static Level currentLevel = levels[0];
@@ -66,34 +68,27 @@ public class Level {
 		bounds = new Rectangle[width * height];
 		
 		for(int y = 0; y < height; y++) {
-			for(int x = 0; x < width; x++){
-				int r = ( tilesImage.getRGB(x, y) >> 16 & 0xFF);
-				int g = ((tilesImage.getRGB(x, y) >> 8) & 0xFF);
-				int b = ((tilesImage.getRGB(x, y) >> 0) & 0xFF);
-				String color = String.format("#%02x%02x%02x", r, g, b);
-				bounds[x+y*width] = new Rectangle(x*Block.SIZE, y*Block.SIZE, Block.SIZE, Block.SIZE);
-				if(id == 0) System.out.println(color);
-				switch(color){
-					case "#000000":
-						blocks[x+y*width] = Block.blockGeneric;
-						break;
-					case "#ff0000":
-						blocks[x+y*width] = Block.blockKill;
-						break;
-					case "#00ff00":
-						blocks[x+y*width] = Block.blockGreenGoal;
-						break;
-					case "#fafa90":
-						blocks[x+y*width] = Block.blockDisableTransform;
-						break;
-					case "#ccff88":
-						blocks[x+y*width] = Block.blockEnableTransform;
-						break;
-					default:
-						blocks[x+y*width] = Block.blockVoid;
-				}
-			}
-		}
+            for (int x = 0; x < width; x++) {
+                int r = (tilesImage.getRGB(x, y) >> 16 & 0xFF);
+                int g = ((tilesImage.getRGB(x, y) >> 8) & 0xFF);
+                int b = ((tilesImage.getRGB(x, y) >> 0) & 0xFF);
+                String color = String.format("#%02x%02x%02x", r, g, b);
+                bounds[x + y * width] = new Rectangle(x * Block.SIZE, y * Block.SIZE, Block.SIZE, Block.SIZE);
+                if (color.equals("#000000")) {
+                    blocks[x + y * width] = Block.blockGeneric;
+                } else if (color.equals("#ff0000")) {
+                    blocks[x + y * width] = Block.blockKill;
+                } else if (color.equals("#00ff00")) {
+                    blocks[x + y * width] = Block.blockGreenGoal;
+                } else if (color.equals("#fafa90")) {
+                    blocks[x + y * width] = Block.blockDisableTransform;
+                } else if (color.equals("#ccff88")) {
+                    blocks[x + y * width] = Block.blockEnableTransform;
+                } else {
+                    blocks[x + y * width] = Block.blockVoid;
+                }
+            }
+        }
 		
 		levels[id] = this;
 		player = new Player(startPosition, 32, 32, Color.BLACK);
@@ -134,7 +129,7 @@ public class Level {
 		if(n < 0 || n >= blocks.length) return Block.blockVoid;
 		return blocks[n];
 	}
-	
+
 	public Block[] getBlocks(){
 		return blocks;
 	}

@@ -42,7 +42,8 @@ public class Player extends Entity {
 	private int jumpVelocity;;
 	private int doubleJumpVelocity;
 	public boolean canTransform;
-	
+	public boolean active;
+
 	private Form form;
 	
 	public static Sound singleJumpSound, doubleJumpSound, transformFastSound, transformNormalSound, transformSlowSound, deathSound, winSound;
@@ -54,11 +55,12 @@ public class Player extends Entity {
 		speed = 5;
 		doubleJump = -1;
 		canTransform = true;
+        active = true;
 		transform(Form.NORMAL);
 	}
 	
 	public void update() {
-		
+		if(!active) return;
 		if(state == State.DYING) {
 			// Player shrinks then respawns
 			width -= 2;

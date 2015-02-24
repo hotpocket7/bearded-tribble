@@ -11,6 +11,7 @@ public class BlockWin extends Block {
 	}
 	
 	public void collide() {
+        Level.getCurrentLevel().player.active = false;
 		Level.advanceLevel();
 		Player.winSound.play();
 	}
