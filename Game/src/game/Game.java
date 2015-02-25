@@ -33,13 +33,15 @@ public class Game extends Canvas implements Runnable {
 	private int frames;
 
 	private BufferedImage img;
-	private int[] pixels;
+	public static int[] pixels;
 	private Screen screen;
-	
+
 	public GameState gameState;
 	public static Controller controller;
 	
 	public static int deaths;
+
+    double dt = 0;
 
 	public Game() {
 		Dimension size = new Dimension(WIDTH, HEIGHT);
@@ -61,12 +63,13 @@ public class Game extends Canvas implements Runnable {
 		addKeyListener(controller);
 	}
 
-	public void update() {
-		title = String.format("Game | FPS: %d | Deaths: %d | Level %d", frames, deaths, Level.getCurrentLevel().getId() + 1);
+	public void update(double delta) {
+		title = String.format("Game | FPS: %d | Deaths: %d | Level %d | Delta: %f", frames, deaths, Level
+                .getCurrentLevel().getId() + 1, dt);
 		frame.setTitle(title);
 		
 		controller.update();
-		Level.getCurrentLevel().player.update();
+		Level.getCurrentLevel().player.update(delta);
 	}
 	
 	public void setGameState(GameState gameState) {
@@ -79,7 +82,7 @@ public class Game extends Canvas implements Runnable {
 	public void render() {
         BufferStrategy bs = getBufferStrategy();
 		if(bs == null){
-			createBufferStrategy(3);
+			createBufferStrategy(1);
 			return;
 		}
 		
@@ -93,39 +96,47 @@ public class Game extends Canvas implements Runnable {
 		
 		
 		/*g.setColor(Color.BLACK);
-		g.fillRect(0, 0, WIDTH, HEIGHT);*/
+		g.fillRect(Level.getCurrentLevel().getPlayer().position.x, 0, WIDTH, HEIGHT);*/
 		g.drawImage(img, 0, 0, WIDTH, HEIGHT, null);
 
 		g.dispose();
 		bs.show();
 	}
+    
+    public void run() {
+        long lastLoopTime = System.nanoTime();
+        final int TARGET_FPS = 60;
+        final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
+        int lastFpsTime = 0;
+        int fps = 0;
+        while (isRunning) {
+            long now = System.nanoTime();
+            long updateLength = now - lastLoopTime;
+            lastLoopTime = now;
+            double delta = updateLength / ((double)OPTIMAL_TIME);
 
-	public void run() {
-		long lastTime = System.nanoTime();
-		long timer = System.currentTimeMillis();
-		double ns = 1000000000d / 60;
-		double delta = 0;
-		int frames = 0;
-		long now = System.nanoTime();
-		while (isRunning) {
-			now = System.nanoTime();
-			delta += (now - lastTime) / ns;
-			lastTime = now;
-			while (delta >= 1) {
-				update();
-				updates++;
-				render();
-				frames++;
-  				delta--;
-			}
-			
-			if(System.currentTimeMillis() - timer  > 1000){
-				timer += 1000;
-				this.frames = frames;
-				frames = 0;
-			}
-		}
-	}
+            // update the frame counter
+            lastFpsTime += updateLength;
+            fps++;
+
+            // update our FPS counter if a second has passed since
+            // we last recorded
+            if (lastFpsTime >= 1000000000)
+            {
+                frames = fps;
+                lastFpsTime = 0;
+                fps = 0;
+            }
+            update(delta);
+            dt = delta;
+            render();
+            try {
+                Thread.sleep((lastLoopTime-System.nanoTime() + OPTIMAL_TIME)/1000000000);
+            } catch(InterruptedException e){
+                e.printStackTrace();
+            };
+        }
+    }
 
 	public synchronized void start() {
 		isRunning = true;
@@ -155,5 +166,4 @@ public class Game extends Canvas implements Runnable {
 
 		game.start();
 	}
-
 }

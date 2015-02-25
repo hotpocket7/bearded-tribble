@@ -1,7 +1,7 @@
 package game.entity;
 
 import game.Game;
-import game.Vector2i;
+import game.Vector2d;
 import game.level.Level;
 import game.level.block.Block;
 import game.sound.Sound;
@@ -36,11 +36,11 @@ public class Player extends Entity {
 	
 	private State state;
 	
-	private int speed;
-	public int gravity;
+	private double speed;
+	public double gravity;
 	private int doubleJump;
-	private int jumpVelocity;;
-	private int doubleJumpVelocity;
+	private double jumpVelocity;
+	private double doubleJumpVelocity;
 	public boolean canTransform;
 	public boolean active;
 
@@ -48,7 +48,7 @@ public class Player extends Entity {
 	
 	public static Sound singleJumpSound, doubleJumpSound, transformFastSound, transformNormalSound, transformSlowSound, deathSound, winSound;
 		
-	public Player(Vector2i position, int width, int height, Color color){
+	public Player(Vector2d position, int width, int height, Color color){
 		super(position, width, height, color);
 		state = State.JUMPING;
 		gravity = 1;
@@ -59,14 +59,14 @@ public class Player extends Entity {
 		transform(Form.NORMAL);
 	}
 	
-	public void update() {
+	public void update(double delta) {
 		if(!active) return;
 		if(state == State.DYING) {
 			// Player shrinks then respawns
 			width -= 2;
 			height -= 2;
-			position.x += 1;
-			position.y += 1;
+			position.x += 1.0;
+			position.y += 1.0;
 			if(width <= 0 || height <= 0) {
 				position.x = Level.getCurrentLevel().startPosition.x;
 				position.y = Level.getCurrentLevel().startPosition.y;
@@ -109,24 +109,24 @@ public class Player extends Entity {
 				state = State.DOUBLEJUMPING;
 				Player.doubleJumpSound.play();
 			}
-			velocity.y += gravity;
+			velocity.y += gravity * delta;
 		} else if(state == State.DOUBLEJUMPING){
 			if(!Game.controller.jumpDown){
 				if(velocity.y < doubleJumpVelocity/3)
 					velocity.y = doubleJumpVelocity/3;
 			}
 			doubleJump = 3;
-			velocity.y += gravity;
+			velocity.y += gravity * delta;
 		}
 		
 		// Collision detection
 		onGround = false;
-		position.y += velocity.y;
-		bounds.y = position.y;
+		position.y += velocity.y * delta;
+		bounds.y = (int) position.y;
 		handleCollisions(CollisionDirection.VERTICAL);
 		if(state == State.DYING) return;
-		position.x += velocity.x;
-		bounds.x = position.x;
+		position.x += velocity.x * delta;
+		bounds.x = (int) position.x;
 		handleCollisions(CollisionDirection.HORIZONTAL);
 		if(state == State.DYING) return;
 		if(state == State.DYING) update();
@@ -229,7 +229,7 @@ public class Player extends Entity {
 	}
 	
 	private void updateBounds() {
-		bounds = new Rectangle(position.x, position.y, width, height);
+        bounds = new Rectangle((int) position.x, (int) position.y, width, height);
 	}
 	
 	public void transform(Form form){
@@ -264,11 +264,11 @@ public class Player extends Entity {
 }
 	
 	public Form getForm(){
-		return form;
+        return form;
 	}
 
 	public State getState() {
-		return state;
+        return state;
 	}
 	
 }

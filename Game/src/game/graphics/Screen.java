@@ -1,5 +1,6 @@
 package game.graphics;
 
+import game.Game;
 import game.entity.Player;
 import game.level.Level;
 import game.level.block.Block;
@@ -33,7 +34,7 @@ public class Screen {
 	}
 	
 	private void renderPlayer(Player player) {
-		fillRect(player.position.x, player.position.y, player.width, player.height, player.color);
+		fillRect((int) player.position.x, (int) player.position.y, player.width, player.height, player.color);
 	}
 	
 	private void drawOverlayImage(Level level, int x, int y) {
