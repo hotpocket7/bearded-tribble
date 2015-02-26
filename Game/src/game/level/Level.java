@@ -37,16 +37,20 @@ public class Level {
 		levels[5] = new Level("/levels/level5.png", 5, new Vector2d(64*2, 64*6+32));
 		levels[6] = new Level("/levels/level6.png", 6, new Vector2d(62*2, 64*5+32));
 		levels[7] = new Level("/levels/level7.png", 7, new Vector2d(64*1, 64*4+32));
-		levels[8] = new Level("/levels/level8.png", 8, new Vector2d(64*1, 64*3+32));
-        levels[9] = new Level("/levels/level9.png", 9, new Vector2d(64*13 + 32, 64*5 + 32));
-		levels[10] = new Level("/levels/level10.png", 10, new Vector2d(64*2, 64*7+32));
-		levels[11] = new Level("/levels/level11.png", 11, new Vector2d(64*2, 64*5+32));
-		levels[12] = new Level("/levels/level12.png", 12, new Vector2d(64*2, 64*6+32));
-		levels[13] = new Level("/levels/level13.png", 13, new Vector2d(64*1, 64*1+32));
-		levels[14] = new Level("/levels/level14.png", 14, new Vector2d(64*2, 64*4+32));
+		levels[8] = new Level("/levels/level8.png", 8, new Vector2d(64*1.5, 64*2.5));
+		levels[9] = new Level("/levels/level9.png", 9, new Vector2d(64*14.5, 64*7.5));
+		levels[10] = new Level("/levels/level10.png", 10, new Vector2d(64*1, 64*3+32));
+        levels[11] = new Level("/levels/level11.png", 11, new Vector2d(64*13 + 32, 64*5 + 32));
+		levels[12] = new Level("/levels/level12.png", 12, new Vector2d(64*2, 64*7+32));
+		levels[13] = new Level("/levels/level13.png", 13, new Vector2d(64*2, 64*5+32));
+		levels[14] = new Level("/levels/level14.png", 14, new Vector2d(64*1.5, 64*5.5));
+		levels[15] = new Level("/levels/level15.png", 15, new Vector2d(64*2, 64*6+32));
+		levels[16] = new Level("/levels/level16.png", 16, new Vector2d(64*1, 64*1+32));
+		levels[17] = new Level("/levels/level17.png", 17, new Vector2d(64*2, 64*4+32));
+		levels[18] = new Level("/levels/level18.png", 18, new Vector2d(64*1.5, 64*5.5));
 	}
 	
-	private static Level currentLevel = levels[0];
+	private static Level currentLevel = levels[14];
 	private static int currentLevelId = 0;
 	
 	public Level(String levelPath, int id, Vector2d startPosition){

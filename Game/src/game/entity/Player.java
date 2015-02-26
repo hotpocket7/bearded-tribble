@@ -109,19 +109,19 @@ public class Player extends Entity {
 				state = State.DOUBLEJUMPING;
 				Player.doubleJumpSound.play();
 			}
-			velocity.y += gravity * delta;
 		} else if(state == State.DOUBLEJUMPING){
 			if(!Game.controller.jumpDown){
 				if(velocity.y < doubleJumpVelocity/3)
 					velocity.y = doubleJumpVelocity/3;
 			}
 			doubleJump = 3;
-			velocity.y += gravity * delta;
 		}
 		
 		// Collision detection
 		onGround = false;
+        velocity.y += gravity * delta/2;
 		position.y += velocity.y * delta;
+        velocity.y += gravity * delta/2;
 		bounds.y = (int) position.y;
 		handleCollisions(CollisionDirection.VERTICAL);
 		if(state == State.DYING) return;

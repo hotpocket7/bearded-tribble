@@ -93,8 +93,11 @@ public class Game extends Canvas implements Runnable {
 			pixels[i] = screen.pixels[i];
 		}
 
-		
-		
+        for (int i = 0; i < pixels.length; i++) {
+            int pixel = pixels[i];
+            
+        }
+        
 		/*g.setColor(Color.BLACK);
 		g.fillRect(Level.getCurrentLevel().getPlayer().position.x, 0, WIDTH, HEIGHT);*/
 		g.drawImage(img, 0, 0, WIDTH, HEIGHT, null);
@@ -102,7 +105,7 @@ public class Game extends Canvas implements Runnable {
 		g.dispose();
 		bs.show();
 	}
-    
+
     public void run() {
         long lastLoopTime = System.nanoTime();
         final int TARGET_FPS = 60;
