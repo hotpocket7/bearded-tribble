@@ -9,9 +9,7 @@ import java.awt.event.KeyListener;
 public class Controller implements KeyListener {
 	
 	public boolean[] keyDown;
-	public boolean leftDown, rightDown, jumpDown;
-	public boolean transformFlatDown, transformTallDown, transformNormalDown;
-	int right;
+	public boolean leftDown, rightDown, jumpDown, downDown, selectDown, escapeDown;
 	
 	public Controller() {
 		keyDown  = new boolean[65535];
@@ -22,6 +20,9 @@ public class Controller implements KeyListener {
 		leftDown = keyDown[KeyEvent.VK_LEFT] || keyDown[KeyEvent.VK_A];
 		rightDown = keyDown[KeyEvent.VK_RIGHT] || keyDown[KeyEvent.VK_D];
 		jumpDown = keyDown[KeyEvent.VK_UP] || keyDown[KeyEvent.VK_W];
+        downDown = keyDown[KeyEvent.VK_DOWN] || keyDown[KeyEvent.VK_S];
+        selectDown = keyDown[KeyEvent.VK_SPACE] || keyDown[KeyEvent.VK_ENTER];
+        escapeDown = keyDown[KeyEvent.VK_ESCAPE];
 	}
 	
 	public void keyPressed(KeyEvent e) {

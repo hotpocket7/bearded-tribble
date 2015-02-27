@@ -12,22 +12,22 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class Level {
-	
+
 	public Vector2d startPosition;
-	
+
 	private int width, height;
-	
+
 	public BufferedImage tilesImage;
 	private BufferedImage overlayImage = null;
 	public int[] overlayPixels;
 	private Block[] blocks;
 	private Rectangle[] bounds;
 	private int id;
-	
+
 	public Player player;
-	
+
 	public static Level[] levels  = new Level[100];
-	
+
 	static {
 		levels[0] = new Level("/levels/level0.png", "/levels/overlay0.png", 0, new Vector2d(64*2, 64*5+32));
 		levels[1] = new Level("/levels/level1.png", "/levels/overlay1.png", 1, new Vector2d(64, 64*6+32));
@@ -46,22 +46,22 @@ public class Level {
 		levels[14] = new Level("/levels/level14.png", 14, new Vector2d(64*1.5, 64*5.5));
 		levels[15] = new Level("/levels/level15.png", 15, new Vector2d(64*2, 64*6+32));
 		levels[16] = new Level("/levels/level16.png", 16, new Vector2d(64*1, 64*1+32));
-		levels[17] = new Level("/levels/level17.png", 17, new Vector2d(64*2, 64*4+32));
-		levels[18] = new Level("/levels/level18.png", 18, new Vector2d(64*1.5, 64*5.5));
+		levels[17] = new Level("/levels/level17.png", 17, new Vector2d(64*1.5, 64*5.5));
+		levels[18] = new Level("/levels/level18.png", 18, new Vector2d(64*2, 64*4+32));
 	}
-	
-	private static Level currentLevel = levels[14];
+
+	private static Level currentLevel = levels[0];
 	private static int currentLevelId = 0;
-	
+
 	public Level(String levelPath, int id, Vector2d startPosition){
 		loadLevel(levelPath, id, startPosition);
 	}
-	
+
 	public Level(String levelPath, String overlayPath, int id, Vector2d startPosition){
 		loadOverlayImage(overlayPath);
 		loadLevel(levelPath, id, startPosition);
 	}
-	
+
 	private void loadLevel(String levelPath, int id, Vector2d startPosition){
 		this.id = id;
 		loadLevelImage(levelPath);
@@ -70,8 +70,8 @@ public class Level {
 		this.startPosition = startPosition;
 		blocks = new Block[width*height];
 		bounds = new Rectangle[width * height];
-		
-		for(int y = 0; y < height; y++) {
+
+        for(int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int r = (tilesImage.getRGB(x, y) >> 16 & 0xFF);
                 int g = ((tilesImage.getRGB(x, y) >> 8) & 0xFF);
@@ -93,7 +93,7 @@ public class Level {
                 }
             }
         }
-		
+
 		levels[id] = this;
 		player = new Player(startPosition, 32, 32, Color.BLACK);
 	}

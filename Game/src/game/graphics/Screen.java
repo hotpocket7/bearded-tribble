@@ -1,17 +1,17 @@
 package game.graphics;
 
-import game.Game;
 import game.entity.Player;
 import game.level.Level;
 import game.level.block.Block;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Screen {
 	private int width, height;
 	public int[] pixels;
-	
+	private Graphics g;
+
 	public Screen(int width, int height){
 		this.width = width;
 		this.height = height;
@@ -57,4 +57,26 @@ public class Screen {
 			}
 		}
 	}
+
+    public void renderText(String text, int x, int y, int size, Color color) {
+        Font font = new Font("Courier New", Font.BOLD, size);
+        g.setColor(color);
+        g.setFont(font);
+        g.drawString(text, x, y);
+    }
+
+    public void clearGraphics() {
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, width, height);
+    }
+
+    public void setGraphics(Graphics g){
+        this.g = g;
+    }
+
+    public void clear() {
+        for (int i = 0; i < pixels.length; i++) {
+            pixels[i] = 0;
+        }
+    }
 }

@@ -3,6 +3,7 @@ package game;
 import game.entity.Player;
 import game.graphics.Screen;
 import game.level.Level;
+import game.menu.Menu;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -20,9 +21,11 @@ public class Game extends Canvas implements Runnable {
 	public static enum GameState {
 		MENU, GAME
 	}
+
+    public static Game game;
 	
 	private static final long serialVersionUID = 1L;
-	JFrame frame = new JFrame();
+	public JFrame frame = new JFrame();
 	public static String title = "yo";
 	public static final int WIDTH = 1024;
 	public static final int HEIGHT = WIDTH / 16 * 9;
@@ -36,7 +39,7 @@ public class Game extends Canvas implements Runnable {
 	public static int[] pixels;
 	private Screen screen;
 
-	public GameState gameState;
+	private static GameState gameState;
 	public static Controller controller;
 	
 	public static int deaths;
@@ -58,7 +61,7 @@ public class Game extends Canvas implements Runnable {
 		controller = new Controller();
 		deaths = 0;
 		
-		setGameState(GameState.GAME);
+		setGameState(GameState.MENU);
 		
 		addKeyListener(controller);
 	}
@@ -67,17 +70,23 @@ public class Game extends Canvas implements Runnable {
 		title = String.format("Game | FPS: %d | Deaths: %d | Level %d | Delta: %f", frames, deaths, Level
                 .getCurrentLevel().getId() + 1, dt);
 		frame.setTitle(title);
-		
-		controller.update();
-		Level.getCurrentLevel().player.update(delta);
+        controller.update();
+		if(gameState == GameState.GAME) {
+            Level.getCurrentLevel().player.update(delta);
+            if(controller.escapeDown) setGameState(GameState.MENU);
+        } else if(gameState == GameState.MENU) {
+            Menu.currentMenu.update();
+        }
 	}
 	
-	public void setGameState(GameState gameState) {
-		this.gameState = gameState;
+	public static void setGameState(GameState gs) {
+		gameState = gs;
 		if(gameState == GameState.GAME){
 			Level.getCurrentLevel().player = new Player(Level.getCurrentLevel().startPosition, 32, 32, Color.BLACK);
 		}
 	}
+
+    public static GameState getGameState() { return gameState; }
 
 	public void render() {
         BufferStrategy bs = getBufferStrategy();
@@ -87,27 +96,26 @@ public class Game extends Canvas implements Runnable {
 		}
 		
 		Graphics g = bs.getDrawGraphics();
-
+        screen.clear();
 		screen.render();
 		for(int i = 0; i < pixels.length; i++){
 			pixels[i] = screen.pixels[i];
 		}
-
-        for (int i = 0; i < pixels.length; i++) {
-            int pixel = pixels[i];
-            
-        }
         
-		/*g.setColor(Color.BLACK);
-		g.fillRect(Level.getCurrentLevel().getPlayer().position.x, 0, WIDTH, HEIGHT);*/
-		g.drawImage(img, 0, 0, WIDTH, HEIGHT, null);
+		if(gameState == GameState.GAME) {
+            g.drawImage(img, 0, 0, WIDTH, HEIGHT, null);
+        } else if(gameState == GameState.MENU) {
+            screen.setGraphics(g);
+            screen.clear();
+            Menu.main.render(screen);
+        }
 
 		g.dispose();
 		bs.show();
 	}
 
     public void run() {
-        long lastLoopTime = System.nanoTime();
+        long lastLoopTime = System.nanoTime() + 1;
         final int TARGET_FPS = 60;
         final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
         int lastFpsTime = 0;
@@ -134,10 +142,11 @@ public class Game extends Canvas implements Runnable {
             dt = delta;
             render();
             try {
-                Thread.sleep((lastLoopTime-System.nanoTime() + OPTIMAL_TIME)/1000000000);
+                long c = Math.abs((lastLoopTime-System.nanoTime() + OPTIMAL_TIME)/1000000000);
+                Thread.sleep(c);
             } catch(InterruptedException e){
                 e.printStackTrace();
-            };
+            }
         }
     }
 
@@ -157,7 +166,7 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		Game game = new Game();
+		game = new Game();
 		game.frame.add(game);
 		game.frame.setTitle(title);
 		game.frame.setSize(game.getSize());
