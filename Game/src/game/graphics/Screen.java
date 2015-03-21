@@ -1,5 +1,6 @@
 package game.graphics;
 
+import game.Game;
 import game.entity.Player;
 import game.level.Level;
 import game.level.block.Block;
@@ -11,15 +12,16 @@ public class Screen {
 	private int width, height;
 	public int[] pixels;
 	private Graphics g;
+    Font font;
 
 	public Screen(int width, int height){
 		this.width = width;
 		this.height = height;
 		pixels = new int[width*height];
+        font = new Font();
 	}
 	
-	public void render(){
-		fillRect(0, 0, width, height, Color.WHITE);
+	public void renderGame(){
 		renderLevel(Level.getCurrentLevel());
 		renderPlayer(Level.getCurrentLevel().player);
 	}
@@ -58,25 +60,26 @@ public class Screen {
 		}
 	}
 
-    public void renderText(String text, int x, int y, int size, Color color) {
-        Font font = new Font("Courier New", Font.BOLD, size);
-        g.setColor(color);
-        g.setFont(font);
-        g.drawString(text, x, y);
-    }
-
-    public void clearGraphics() {
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0, width, height);
-    }
-
-    public void setGraphics(Graphics g){
-        this.g = g;
+    public void renderSprite(Sprite sprite, int x, int y){
+        for(int yCount = 0; yCount < sprite.height; yCount++) {
+                for(int xCount = 0; xCount < sprite.width; xCount++) {
+                    int pix = sprite.pixels[xCount + yCount * sprite.width];
+                    int r = ((pix >> 16) & 0xFF);
+                    int g = ((pix >> 8) & 0xFF);
+                    int b = ((pix >> 0) & 0xFF);
+                    String color = String.format("#%02x%02x%02x", r, g, b);
+                    if(!(color.equals("#bb00bb") || color.equals("#440044")))
+                        pixels[(x + xCount) + (y + yCount) *
+                            width] = sprite
+                            .pixels[xCount + yCount *
+                            sprite.width];
+            }
+        }
     }
 
     public void clear() {
         for (int i = 0; i < pixels.length; i++) {
-            pixels[i] = 0;
+            pixels[i] = 0xffffff;
         }
     }
 }

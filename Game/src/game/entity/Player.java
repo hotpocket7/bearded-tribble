@@ -63,20 +63,20 @@ public class Player extends Entity {
 		if(!active) return;
 		if(state == State.DYING) {
 			// Player shrinks then respawns
-			width -= 2;
-			height -= 2;
-			position.x += 1.0;
-			position.y += 1.0;
+			width -= 2 * delta;
+			height -= 2 * delta;
+			position.x += 1 * delta;
+			position.y += 1 * delta;
 			if(width <= 0 || height <= 0) {
 				position.x = Level.getCurrentLevel().startPosition.x;
 				position.y = Level.getCurrentLevel().startPosition.y;
 				width = 32;
 				height = 32;
-				state = State.JUMPING;
+				state = State.GROUNDED;
 				Game.deaths++;
 				updateBounds();
 			}
-			return;
+            return;
 		}
 		
 		// Movement (walking, jumping, double jumping)
@@ -122,6 +122,7 @@ public class Player extends Entity {
         velocity.y += gravity * delta/2;
 		position.y += velocity.y * delta;
         velocity.y += gravity * delta/2;
+        if(velocity.y >= 25) velocity.y = 25;
 		bounds.y = (int) position.y;
 		handleCollisions(CollisionDirection.VERTICAL);
 		if(state == State.DYING) return;

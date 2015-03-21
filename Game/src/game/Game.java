@@ -1,6 +1,7 @@
 package game;
 
 import game.entity.Player;
+import game.graphics.Font;
 import game.graphics.Screen;
 import game.level.Level;
 import game.menu.Menu;
@@ -39,6 +40,8 @@ public class Game extends Canvas implements Runnable {
 	public static int[] pixels;
 	private Screen screen;
 
+    public static Font font;
+
 	private static GameState gameState;
 	public static Controller controller;
 	
@@ -57,6 +60,7 @@ public class Game extends Canvas implements Runnable {
 		screen = new Screen(WIDTH, HEIGHT);
 		img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+        font = new Font();
 		
 		controller = new Controller();
 		deaths = 0;
@@ -97,19 +101,16 @@ public class Game extends Canvas implements Runnable {
 		
 		Graphics g = bs.getDrawGraphics();
         screen.clear();
-		screen.render();
-		for(int i = 0; i < pixels.length; i++){
-			pixels[i] = screen.pixels[i];
-		}
-        
-		if(gameState == GameState.GAME) {
-            g.drawImage(img, 0, 0, WIDTH, HEIGHT, null);
-        } else if(gameState == GameState.MENU) {
-            screen.setGraphics(g);
-            screen.clear();
+        if(gameState == GameState.GAME)
+		    screen.renderGame();
+        else if(gameState == GameState.MENU) {
             Menu.main.render(screen);
         }
 
+		for(int i = 0; i < pixels.length; i++){
+			pixels[i] = screen.pixels[i];
+		}
+        g.drawImage(img, 0, 0, WIDTH, HEIGHT, null);
 		g.dispose();
 		bs.show();
 	}
